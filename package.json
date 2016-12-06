@@ -1,0 +1,10 @@
+{
+  "name": "Ventas-Restful-API",
+  "author": "Alain Chevanier",
+  "private": true,
+  "version": "0",
+  "dependencies": {
+    "express": "^4.14.0",
+    "mustache": "^2.3.0"
+  }
+}
