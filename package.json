@@ -2,9 +2,12 @@
   "name": "Ventas-Restful-API",
   "author": "Alain Chevanier",
   "private": true,
-  "version": "0",
+  "version": "1",
+  "main": "server.js",
   "dependencies": {
+    "body-parser": "^1.15.2",
     "express": "^4.14.0",
+    "mongoose": "^4.7.1",
     "mustache": "^2.3.0"
   }
 }
