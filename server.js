@@ -29,9 +29,14 @@ var router = express.Router();              // get an instance of the express Ro
 
 // middleware to use for all requests
 router.use(function(req, res, next) {
-    // do logging
-    console.log('Something is happening.');
-    next(); // make sure we go to the next routes and don't stop here
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
+  // do logging
+  console.log('Dispatching request.');
+
+  next(); // make sure we go to the next routes and don't stop here
 });
 
 // test route to make sure everything is working (accessed at GET http://localhost:8080/api)
@@ -43,7 +48,6 @@ router.get('/', function(request, respose) {
 router.route('/ventas')
     // create a bear (accessed at POST http://localhost:8080/api/bears)
     .post(function(req, res) {
-         
         var venta = new Venta();      // create a new instance of the Venta model
         venta.producto = req.body.producto;
         venta.tamano = req.body.tamano;
@@ -53,22 +57,21 @@ router.route('/ventas')
 
         // save the bear and check for errors
         venta.save(function(err) {
-            if (err) {
-              res.send(err);
-            }
-
-            res.json({ message: 'Venta Creada!' });
+            res.json({ 
+              success: !err,
+              message: !err ? 'Venta Creada!' : err 
+            });
         });
     })
 
     // get all the bears (accessed at GET http://localhost:8080/api/bears)
     .get(function(req, res) {
         Venta.find(function(err, ventas) {
-            if (err) {
-              res.send(err);
-            }
-
-            res.json(ventas);
+          res.json({ 
+              success: !err,
+              message: !err ? 'Ventas Encontradas!' : err,
+              ventas: !err ? ventas : null
+            });
         });
     });
 
@@ -78,23 +81,24 @@ router.route('/ventas/:venta_id')
     // get the bear with that id (accessed at GET http://localhost:8080/api/bears/:bear_id)
     .get(function(req, res) {
         Venta.findById(req.params.venta_id, function(err, venta) {
-            if (err) {
-              res.send(err);
-            }
-                
-            res.json(venta);
+          res.json({ 
+              success: !err,
+              message: !err ? 'Venta Encontrada!' : err,
+              venta: !err ? venta : null
+            });
         });
     })
     // update the bear with this id (accessed at PUT http://localhost:8080/api/bears/:bear_id)
     .put(function(req, res) {
-
         // use our bear model to find the bear we want
         Venta.findById(req.params.venta_id, function(err, venta) {
-
             if (err) {
-              res.send(err);
+              res.json({ 
+                success: false,
+                message: 'Venta no encontrada'
+              });
             }
-                
+
             venta.producto = req.body.producto;
             venta.tamano = req.body.tamano;
             venta.cantidad = req.body.cantidad;
@@ -103,25 +107,23 @@ router.route('/ventas/:venta_id')
 
             // save the bear
             venta.save(function(err) {
-                if (err) {
-                  res.send(err);
-                }
-                  
-
-                res.json({ message: 'Venta actualizada!' });
+              res.json({ 
+                success: !err,
+                message: !err ? 'Venta actualizada Exitosamente!' : err 
+              });
             });
 
         });
     })
+    //
     .delete(function(req, res) {
         Venta.remove({
             _id: req.params.venta_id
         }, function(err, venta) {
-            if (err) {
-              res.send(err);
-            }
-
-            res.json({ message: 'Venta borrada exitosamente' });
+            res.json({ 
+              success: !err,
+              message: !err ? 'Venta Borrada Exitosamente!' : err 
+            });
         });
     });
 
