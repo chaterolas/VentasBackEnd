@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 var port = process.env.PORT || 3333;        // set our port
 
 // MONGO
-var mongoose   = require('mongoose');
+var mongoose = require('mongoose');
 
 mongoose.connect('mongodb://localhost/Ventas'); // connect to our database
 
@@ -56,10 +56,11 @@ router.route('/ventas')
         venta.precio = req.body.precio;
 
         // save the bear and check for errors
-        venta.save(function(err) {
+        venta.save(function(err, object) {
             res.json({ 
               success: !err,
-              message: !err ? 'Venta Creada!' : err 
+              message: !err ? 'Venta Creada!' : err,
+              venta_id: object._id
             });
         });
     })
